@@ -1,0 +1,483 @@
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  CreditCard,
+  Download,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Calendar,
+  Receipt,
+  Smartphone,
+  Building2
+} from 'lucide-react';
+import { pagamentos, educandos } from '@/data/mockData';
+import { Pagamento } from '@/types';
+
+export function Pagamentos() {
+  const [pagamentoSelecionado, setPagamentoSelecionado] = useState<Pagamento | null>(null);
+  const [filtroStatus, setFiltroStatus] = useState<string>('todos');
+  const [filtroEducando, setFiltroEducando] = useState<string>('todos');
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pago': return CheckCircle;
+      case 'pendente': return Clock;
+      case 'atrasado': return AlertTriangle;
+      default: return Clock;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pago': return 'default';
+      case 'pendente': return 'secondary';
+      case 'atrasado': return 'destructive';
+      default: return 'secondary';
+    }
+  };
+
+  const getTipoLabel = (tipo: string) => {
+    switch (tipo) {
+      case 'propina': return 'Propina';
+      case 'matricula': return 'Matrícula';
+      case 'confirmacao': return 'Confirmação';
+      case 'material': return 'Material Escolar';
+      case 'uniforme': return 'Uniforme';
+      default: return tipo;
+    }
+  };
+
+  const pagamentosFiltrados = pagamentos.filter(pagamento => {
+    const matchesStatus = filtroStatus === 'todos' || pagamento.status === filtroStatus;
+    const matchesEducando = filtroEducando === 'todos' || pagamento.educandoId === filtroEducando;
+    return matchesStatus && matchesEducando;
+  });
+
+  const totalPago = pagamentos.filter(p => p.status === 'pago').reduce((acc, p) => acc + p.valor, 0);
+  const totalPendente = pagamentos.filter(p => p.status === 'pendente').reduce((acc, p) => acc + p.valor, 0);
+  const totalAtrasado = pagamentos.filter(p => p.status === 'atrasado').reduce((acc, p) => acc + p.valor, 0);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center">
+            <CreditCard className="mr-3 h-8 w-8" />
+            Pagamentos
+          </h1>
+          <p className="text-muted-foreground">Gerencie os pagamentos dos seus educandos</p>
+        </div>
+      </div>
+
+      {/* Cards de Resumo */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Pago</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {totalPago.toLocaleString()} Kz
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {pagamentos.filter(p => p.status === 'pago').length} pagamentos
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pendentes</CardTitle>
+            <Clock className="h-4 w-4 text-yellow-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">
+              {totalPendente.toLocaleString()} Kz
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {pagamentos.filter(p => p.status === 'pendente').length} pagamentos
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Em Atraso</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">
+              {totalAtrasado.toLocaleString()} Kz
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {pagamentos.filter(p => p.status === 'atrasado').length} pagamentos
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="lista" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="lista">Lista de Pagamentos</TabsTrigger>
+          <TabsTrigger value="realizar">Realizar Pagamento</TabsTrigger>
+          <TabsTrigger value="historico">Histórico</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="lista" className="space-y-4">
+          {/* Filtros */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <Label htmlFor="status">Filtrar por Status</Label>
+              <Select value={filtroStatus} onValueChange={setFiltroStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todos os status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os status</SelectItem>
+                  <SelectItem value="pago">Pago</SelectItem>
+                  <SelectItem value="pendente">Pendente</SelectItem>
+                  <SelectItem value="atrasado">Em Atraso</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex-1">
+              <Label htmlFor="educando">Filtrar por Educando</Label>
+              <Select value={filtroEducando} onValueChange={setFiltroEducando}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todos os educandos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os educandos</SelectItem>
+                  {educandos.map(educando => (
+                    <SelectItem key={educando.id} value={educando.id}>
+                      {educando.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Tabela de Pagamentos */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Pagamentos</CardTitle>
+              <CardDescription>Lista completa de todos os pagamentos</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Educando</TableHead>
+                      <TableHead>Tipo</TableHead>
+                      <TableHead>Período</TableHead>
+                      <TableHead>Valor</TableHead>
+                      <TableHead>Vencimento</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pagamentosFiltrados.map((pagamento) => {
+                      const educando = educandos.find(e => e.id === pagamento.educandoId);
+                      const StatusIcon = getStatusIcon(pagamento.status);
+                      
+                      return (
+                        <TableRow key={pagamento.id}>
+                          <TableCell>
+                            <div className="font-medium">{educando?.nome}</div>
+                            <div className="text-sm text-muted-foreground">{educando?.turma}</div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {getTipoLabel(pagamento.tipo)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {pagamento.mes ? `${pagamento.mes}/${pagamento.ano}` : pagamento.ano}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {pagamento.valor.toLocaleString()} Kz
+                          </TableCell>
+                          <TableCell>
+                            {new Date(pagamento.dataVencimento).toLocaleDateString('pt-BR')}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={getStatusColor(pagamento.status)} className="flex items-center w-fit">
+                              <StatusIcon className="mr-1 h-3 w-3" />
+                              {pagamento.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              {pagamento.status === 'pago' && pagamento.recibo && (
+                                <Button variant="outline" size="sm">
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {(pagamento.status === 'pendente' || pagamento.status === 'atrasado') && (
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button size="sm">Pagar</Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>Realizar Pagamento</DialogTitle>
+                                      <DialogDescription>
+                                        {getTipoLabel(pagamento.tipo)} - {educando?.nome}
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <FormularioPagamento pagamento={pagamento} />
+                                  </DialogContent>
+                                </Dialog>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="realizar" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <DollarSign className="mr-2 h-5 w-5" />
+                Realizar Pagamento
+              </CardTitle>
+              <CardDescription>
+                Selecione um pagamento pendente para realizar
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {pagamentos
+                  .filter(p => p.status === 'pendente' || p.status === 'atrasado')
+                  .map((pagamento) => {
+                    const educando = educandos.find(e => e.id === pagamento.educandoId);
+                    const StatusIcon = getStatusIcon(pagamento.status);
+                    
+                    return (
+                      <Card key={pagamento.id} className="border-2 hover:border-blue-300 transition-colors">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">{getTipoLabel(pagamento.tipo)}</CardTitle>
+                            <Badge variant={getStatusColor(pagamento.status)}>
+                              <StatusIcon className="mr-1 h-3 w-3" />
+                              {pagamento.status}
+                            </Badge>
+                          </div>
+                          <CardDescription>{educando?.nome} - {educando?.turma}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className="text-sm text-muted-foreground">Valor:</span>
+                              <span className="font-bold text-lg">{pagamento.valor.toLocaleString()} Kz</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-sm text-muted-foreground">Vencimento:</span>
+                              <span className={`text-sm ${pagamento.status === 'atrasado' ? 'text-red-600 font-medium' : ''}`}>
+                                {new Date(pagamento.dataVencimento).toLocaleDateString('pt-BR')}
+                              </span>
+                            </div>
+                            {pagamento.mes && (
+                              <div className="flex justify-between">
+                                <span className="text-sm text-muted-foreground">Período:</span>
+                                <span className="text-sm">{pagamento.mes}/{pagamento.ano}</span>
+                              </div>
+                            )}
+                            
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button className="w-full mt-4">
+                                  <CreditCard className="mr-2 h-4 w-4" />
+                                  Pagar Agora
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Realizar Pagamento</DialogTitle>
+                                  <DialogDescription>
+                                    {getTipoLabel(pagamento.tipo)} - {educando?.nome}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <FormularioPagamento pagamento={pagamento} />
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="historico" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Receipt className="mr-2 h-5 w-5" />
+                Histórico de Pagamentos
+              </CardTitle>
+              <CardDescription>Todos os pagamentos realizados</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {pagamentos
+                  .filter(p => p.status === 'pago')
+                  .sort((a, b) => new Date(b.dataPagamento!).getTime() - new Date(a.dataPagamento!).getTime())
+                  .map((pagamento) => {
+                    const educando = educandos.find(e => e.id === pagamento.educandoId);
+                    
+                    return (
+                      <div key={pagamento.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <div className="p-2 bg-green-100 rounded-full">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium">{getTipoLabel(pagamento.tipo)}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {educando?.nome} - {pagamento.mes ? `${pagamento.mes}/${pagamento.ano}` : pagamento.ano}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Pago em: {new Date(pagamento.dataPagamento!).toLocaleDateString('pt-BR')}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold">{pagamento.valor.toLocaleString()} Kz</p>
+                          <p className="text-xs text-muted-foreground">{pagamento.metodoPagamento}</p>
+                          <Button variant="outline" size="sm" className="mt-2">
+                            <Download className="mr-2 h-4 w-4" />
+                            Recibo
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+function FormularioPagamento({ pagamento }: { pagamento: Pagamento }) {
+  const [metodoPagamento, setMetodoPagamento] = useState('');
+  const educando = educandos.find(e => e.id === pagamento.educandoId);
+
+  return (
+    <div className="space-y-4">
+      <div className="p-4 bg-gray-50 rounded-lg">
+        <h3 className="font-medium mb-2">Detalhes do Pagamento</h3>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span>Educando:</span>
+            <span className="font-medium">{educando?.nome}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Tipo:</span>
+            <span className="font-medium">{pagamento.tipo}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Valor:</span>
+            <span className="font-bold text-lg">{pagamento.valor.toLocaleString()} Kz</span>
+          </div>
+          {pagamento.mes && (
+            <div className="flex justify-between">
+              <span>Período:</span>
+              <span className="font-medium">{pagamento.mes}/{pagamento.ano}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="metodo">Método de Pagamento</Label>
+        <Select value={metodoPagamento} onValueChange={setMetodoPagamento}>
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione o método" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="multicaixa">
+              <div className="flex items-center">
+                <Smartphone className="mr-2 h-4 w-4" />
+                Multicaixa Express
+              </div>
+            </SelectItem>
+            <SelectItem value="transferencia">
+              <div className="flex items-center">
+                <Building2 className="mr-2 h-4 w-4" />
+                Transferência Bancária
+              </div>
+            </SelectItem>
+            <SelectItem value="dinheiro">
+              <div className="flex items-center">
+                <DollarSign className="mr-2 h-4 w-4" />
+                Dinheiro (Presencial)
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {metodoPagamento === 'multicaixa' && (
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h4 className="font-medium text-blue-800 mb-2">Pagamento via Multicaixa</h4>
+          <p className="text-sm text-blue-700 mb-3">
+            Use o código abaixo no seu Multicaixa Express:
+          </p>
+          <div className="bg-white p-3 rounded border text-center">
+            <span className="font-mono text-lg font-bold">MC-{pagamento.id.toUpperCase()}</span>
+          </div>
+        </div>
+      )}
+
+      {metodoPagamento === 'transferencia' && (
+        <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+          <h4 className="font-medium text-green-800 mb-2">Dados para Transferência</h4>
+          <div className="space-y-2 text-sm">
+            <div><strong>Banco:</strong> BAI</div>
+            <div><strong>IBAN:</strong> AO06 0040 0000 1234 5678 1011 2</div>
+            <div><strong>Titular:</strong> Escola Internacional de Luanda</div>
+            <div><strong>Referência:</strong> {pagamento.id.toUpperCase()}</div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex space-x-2 pt-4">
+        <Button variant="outline" className="flex-1">Cancelar</Button>
+        <Button className="flex-1" disabled={!metodoPagamento}>
+          <CreditCard className="mr-2 h-4 w-4" />
+          Confirmar Pagamento
+        </Button>
+      </div>
+    </div>
+  );
+}
