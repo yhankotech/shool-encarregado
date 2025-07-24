@@ -229,7 +229,7 @@ export function NotasPauta() {
                             </span>
                           </TableCell>
                           <TableCell className="text-center">
-                            <Badge variant={statusInfo.color as any} className="flex items-center w-fit mx-auto">
+                            <Badge variant={statusInfo.color  as unknown} className="flex items-center w-fit mx-auto bg-green-500">
                               <StatusIcon className="mr-1 h-3 w-3" />
                               {statusInfo.status}
                             </Badge>
@@ -265,7 +265,7 @@ export function NotasPauta() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg">{disciplinaData.disciplina}</CardTitle>
-                      <Badge variant={statusInfo.color as any} className="flex items-center">
+                      <Badge variant={statusInfo.color as unknown} className="flex items-center">
                         <StatusIcon className="mr-1 h-3 w-3" />
                         {statusInfo.status}
                       </Badge>

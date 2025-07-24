@@ -14,8 +14,6 @@ import {
   Users,
   Target,
   MessageCircle,
-  Sparkles,
-  Brain,
   Heart
 } from 'lucide-react';
 
@@ -114,10 +112,6 @@ export function IAAssistant() {
           </h1>
           <p className="text-muted-foreground">Seu parceiro inteligente para apoiar o sucesso educacional dos seus filhos</p>
         </div>
-        <Badge variant="outline" className="flex items-center">
-          <Sparkles className="mr-1 h-3 w-3" />
-          Powered by EduFamily AI
-        </Badge>
       </div>
 
       <Tabs defaultValue="chat" className="space-y-4">

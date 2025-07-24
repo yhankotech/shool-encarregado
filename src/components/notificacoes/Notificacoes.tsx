@@ -11,7 +11,6 @@ import {
   DollarSign,
   GraduationCap,
   Users,
-  Download,
   Eye,
   Check,
   X,

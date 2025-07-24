@@ -213,7 +213,7 @@ export function Chat() {
                         <p className="font-medium truncate">{conversa.nome}</p>
                         <div className="flex items-center space-x-2">
                           {conversa.naoLidas > 0 && (
-                            <Badge variant="destructive" className="h-5 w-5 p-0 text-xs">
+                            <Badge variant="destructive" className="rounded-full">
                               {conversa.naoLidas}
                             </Badge>
                           )}
@@ -323,7 +323,7 @@ export function Chat() {
                   onKeyPress={(e) => e.key === 'Enter' && enviarMensagem()}
                   className="flex-1"
                 />
-                <Button onClick={enviarMensagem}>
+                <Button onClick={enviarMensagem} className='bg-green-500 hover:bg-green-600'>
                   <Send className="h-4 w-4" />
                 </Button>
               </div>

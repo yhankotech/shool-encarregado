@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   BarChart,
@@ -28,7 +27,7 @@ import {
   Clock,
   DollarSign
 } from 'lucide-react';
-import { educandos, pagamentos, notificacoes, atividades, desempenho } from '@/data/mockData';
+import { educandos, pagamentos, notificacoes, atividades } from '@/data/mockData';
 
 const notasData = [
   { trimestre: '1º Trim', joao: 15.0, maria: 18.0 },
@@ -78,9 +77,6 @@ export function Dashboard() {
                 {pagamentosPendentes > 0 && `${pagamentosPendentes} pagamento(s) pendente(s)`}
               </p>
             </div>
-            <Button size="sm" className="ml-auto">
-              Ver Pagamentos
-            </Button>
           </div>
         </div>
       )}

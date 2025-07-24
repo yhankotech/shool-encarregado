@@ -9,15 +9,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { Bell, User, LogOut, Settings, CreditCard } from 'lucide-react';
-import { encarregado, pagamentos } from '@/data/mockData';
+import { Bell, User, LogOut, Settings } from 'lucide-react';
+import { encarregado } from '@/data/mockData';
 
 export function Header() {
-  const pagamentosAtrasados = pagamentos.filter(p => p.status === 'atrasado').length;
-  const pagamentosPendentes = pagamentos.filter(p => p.status === 'pendente').length;
-
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <header className="bg-white border-b border-gray-200 px-6 py-4 w-full">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-semibold text-gray-900">
@@ -34,23 +31,9 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Alerta de Pagamentos */}
-          {(pagamentosAtrasados > 0 || pagamentosPendentes > 0) && (
-            <div className="flex items-center space-x-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
-              <CreditCard className="h-4 w-4 text-red-600" />
-              <div className="text-xs">
-                <p className="font-medium text-red-800">
-                  {pagamentosAtrasados > 0 && `${pagamentosAtrasados} em atraso`}
-                  {pagamentosAtrasados > 0 && pagamentosPendentes > 0 && ', '}
-                  {pagamentosPendentes > 0 && `${pagamentosPendentes} pendente${pagamentosPendentes > 1 ? 's' : ''}`}
-                </p>
-              </div>
-            </div>
-          )}
-
-          <Button variant="ghost" size="sm" className="relative">
+          <Button variant="ghost" size="sm" className="relative text-blue-600 hover:text-blue-600 bg-transparent">
             <Bell className="h-5 w-5" />
-            <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
+            <Badge className="absolute left-6 top-1 h-3 w-3 p-0 text-xs bg-red-500 rounded-full text-right">
               3
             </Badge>
           </Button>

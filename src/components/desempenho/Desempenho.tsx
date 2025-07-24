@@ -22,7 +22,6 @@ import {
 } from 'recharts';
 import {
   TrendingUp,
-  TrendingDown,
   Target,
   Award,
   AlertCircle,

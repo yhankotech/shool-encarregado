@@ -2,12 +2,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   CreditCard,
@@ -16,7 +14,6 @@ import {
   CheckCircle,
   Clock,
   DollarSign,
-  Calendar,
   Receipt,
   Smartphone,
   Building2
@@ -25,7 +22,6 @@ import { pagamentos, educandos } from '@/data/mockData';
 import { Pagamento } from '@/types';
 
 export function Pagamentos() {
-  const [pagamentoSelecionado, setPagamentoSelecionado] = useState<Pagamento | null>(null);
   const [filtroStatus, setFiltroStatus] = useState<string>('todos');
   const [filtroEducando, setFiltroEducando] = useState<string>('todos');
 
@@ -40,8 +36,8 @@ export function Pagamentos() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pago': return 'default';
-      case 'pendente': return 'secondary';
+      case 'pago': return 'success';
+      case 'pendente': return 'default';
       case 'atrasado': return 'destructive';
       default: return 'secondary';
     }
@@ -233,7 +229,7 @@ export function Pagamentos() {
                               {(pagamento.status === 'pendente' || pagamento.status === 'atrasado') && (
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button size="sm">Pagar</Button>
+                                    <Button size="sm" className='bg-orange-500 hover:bg-orange-600'>Pagar</Button>
                                   </DialogTrigger>
                                   <DialogContent>
                                     <DialogHeader>
@@ -278,7 +274,7 @@ export function Pagamentos() {
                     const StatusIcon = getStatusIcon(pagamento.status);
                     
                     return (
-                      <Card key={pagamento.id} className="border-2 hover:border-blue-300 transition-colors">
+                      <Card key={pagamento.id} className="border-2">
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-lg">{getTipoLabel(pagamento.tipo)}</CardTitle>
@@ -310,7 +306,7 @@ export function Pagamentos() {
                             
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button className="w-full mt-4">
+                                <Button className="w-full mt-4 bg-green-600 hover:bg-green-500">
                                   <CreditCard className="mr-2 h-4 w-4" />
                                   Pagar Agora
                                 </Button>
@@ -472,8 +468,7 @@ function FormularioPagamento({ pagamento }: { pagamento: Pagamento }) {
       )}
 
       <div className="flex space-x-2 pt-4">
-        <Button variant="outline" className="flex-1">Cancelar</Button>
-        <Button className="flex-1" disabled={!metodoPagamento}>
+        <Button className="flex-1 bg-green-600 hover:bg-green-500" disabled={!metodoPagamento}>
           <CreditCard className="mr-2 h-4 w-4" />
           Confirmar Pagamento
         </Button>
