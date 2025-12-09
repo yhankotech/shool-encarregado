@@ -3,6 +3,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate } from "react-router-dom";
+
 import {
   Home,
   CreditCard,
@@ -25,17 +27,18 @@ interface SidebarProps {
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'pagamentos', label: 'Pagamentos', icon: CreditCard, badge: 2 },
-  { id: 'notas', label: 'Notas & Pauta', icon: GraduationCap },
+  { id: 'notasepauta', label: 'Notas & Pauta', icon: GraduationCap },
   { id: 'desempenho', label: 'Desempenho', icon: BarChart3 },
   { id: 'chat', label: 'Mensagens', icon: MessageCircle, badge: 1 },
   { id: 'notificacoes', label: 'Notificações', icon: Bell, badge: 3 },
   { id: 'atividades', label: 'Atividades', icon: Calendar },
-  { id: 'ia-assistant', label: 'Assistente IA', icon: Bot },
+  { id: 'assistente', label: 'Assistente IA', icon: Bot },
   { id: 'perfil', label: 'Perfil', icon: User }
 ];
 
 export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className={cn(
@@ -72,7 +75,12 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                 collapsed && "px-2",
                 activeTab === item.id && "bg-blue-600 text-white hover:bg-blue-700 flex justify-center"
               )}
-              onClick={() => onTabChange(item.id)}
+              onClick={
+                () => {
+                  onTabChange(item.id);
+                  navigate("/" + item.id)
+                }
+              }
             >
               <item.icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
               {!collapsed && (
