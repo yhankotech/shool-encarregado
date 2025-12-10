@@ -16,7 +16,7 @@ import {
   Eye,
   Mail,
   Calendar
-} from 'lucide-react';
+} from '../../lib/icons';
 import { educandos, professores } from '@/data/mockData';
 import { Educando } from '@/types';
 

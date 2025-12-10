@@ -15,7 +15,7 @@ import {
   Check,
   X,
   Filter
-} from 'lucide-react';
+} from '../../lib/icons';
 import { notificacoes, educandos } from '@/data/mockData';
 import { Notificacao } from '@/types';
 

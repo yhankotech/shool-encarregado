@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { Bell, User, LogOut, Settings } from 'lucide-react';
+import { Bell, User, LogOut, Settings } from '../lib/icons';
 import { encarregado } from '@/data/mockData';
 
 export function Header() {

@@ -17,7 +17,7 @@ import {
   Receipt,
   Smartphone,
   Building2
-} from 'lucide-react';
+} from '../../lib/icons';
 import { pagamentos, educandos } from '@/data/mockData';
 import { Pagamento } from '@/types';
 

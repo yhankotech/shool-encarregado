@@ -14,7 +14,7 @@ import {
   BookOpen,
   Camera,
   Download
-} from 'lucide-react';
+} from '../../lib/icons';
 import { atividades, educandos } from '@/data/mockData';
 import { AtividadeEscolar } from '@/types';
 
