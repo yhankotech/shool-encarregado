@@ -17,7 +17,7 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-} from 'lucide-react';
+} from '../lib/icons';
 
 interface SidebarProps {
   activeTab: string;

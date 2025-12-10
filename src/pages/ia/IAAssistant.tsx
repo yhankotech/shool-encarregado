@@ -15,7 +15,7 @@ import {
   Target,
   MessageCircle,
   Heart
-} from 'lucide-react';
+} from '../../lib/icons';
 
 interface Conversa {
   id: string;

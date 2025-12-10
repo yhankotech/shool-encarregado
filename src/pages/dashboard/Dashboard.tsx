@@ -26,7 +26,7 @@ import {
   CheckCircle,
   Clock,
   DollarSign
-} from 'lucide-react';
+} from '../../lib/icons';
 import { educandos, pagamentos, notificacoes, atividades } from '@/data/mockData';
 
 const notasData = [

@@ -28,7 +28,7 @@ import {
   CheckCircle,
   BookOpen,
   Calendar
-} from 'lucide-react';
+} from '../../lib/icons';
 import { educandos, desempenho } from '@/data/mockData';
 import { Educando } from '@/types';
 
